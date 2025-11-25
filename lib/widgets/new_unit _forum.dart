@@ -44,12 +44,31 @@ class _NewUnitForumState extends State<NewUnitForum> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // TODO: add image preview and button to take picture
-            _imagefile == null
-              ? const Icon(Icons.image_not_supported_rounded, size: 100, color: Colors.grey)
-              : Image.file(_imagefile!),
-
-            const SizedBox(height: 16.0),
+            // TODO: On tap of the image, open camera page to take picture
+            Card(
+              child: InkWell(
+                onTap: () async {
+                  // Navigate to camera page and await the result
+                  final result = await Navigator.push<File?>(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CameraPage()),
+                  );
+                  if (result != null) {
+                    setState(() {
+                      _imagefile = result;
+                    });
+                  }
+                },
+                child: _imagefile == null // if no image, show placeholder
+                  ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(100.0),
+                      child: Icon(Icons.image_not_supported_sharp, size: 100, color: Colors.grey),
+                    ),
+                  )
+                  : Image.file(_imagefile!),
+              ),
+            ),
 
             // Unit Name
             _fieldBuilder('Unit Name:', _nameController),

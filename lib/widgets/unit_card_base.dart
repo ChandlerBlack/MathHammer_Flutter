@@ -27,20 +27,26 @@ class UnitCardBase extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const UnitCardFull(),
+              builder: (context) => UnitCardFull(unit: unit!),
             ),
           );
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            unit!.imagePath != null
-                ? Image.file(File(unit!.imagePath!), height: 100)
-                : Icon(Icons.image_not_supported_rounded, size: 100, color: Colors.grey),
-            const SizedBox(height: 8),
-            Text(unit!.name, style: Theme.of(context).textTheme.titleMedium),
-          ]
-        )
+        child: Hero(
+          tag: 'unit_${unit!.name}',
+          child: Material(
+            color: Colors.transparent,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                unit!.imagePath != null
+                    ? Image.file(File(unit!.imagePath!), height: 100)
+                    : Icon(Icons.image_not_supported_rounded, size: 100, color: Colors.grey),
+                const SizedBox(height: 8),
+                Text(unit!.name, style: Theme.of(context).textTheme.titleMedium),
+              ]
+            ),
+          ),
+        ),
       )
     );
 
