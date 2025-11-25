@@ -4,6 +4,9 @@ import 'package:mathhammer/pages/settings_page.dart';
 import 'package:mathhammer/widgets/unit_card_base.dart';
 import 'pages/add_unit_page.dart';
 import 'pages/unit_library_page.dart';
+import 'pages/simulation_page.dart';
+import 'pages/camera_page.dart';
+import 'package:mathhammer/database/db.dart';
 
 // Global TODO: 
 // 1. Set up local database to store unit information using sqflite
@@ -13,7 +16,12 @@ import 'pages/unit_library_page.dart';
 // 5. Implement selection of units and running simulations between them
 // 6. Implement settings page to adjust app preferences
 
-void main() => runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize the database
+  await initDatabase(); // Uncomment when database code is ready
+  runApp(const MyApp());
+}
 
 
 class MyApp extends StatelessWidget {
@@ -24,47 +32,51 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MathHammer',
       theme: ThemeData.dark(),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const MainScaffold(title: 'MathHammer'),
-        '/addUnit': (context) => MainScaffold(
-          title: 'Add Unit',
-          child: AddUnitPage(),
-        ),
-        '/library': (context) => MainScaffold(
-          title: 'Unit Library',
-          child: UnitLibraryPage(),
-        ),
-        '/settings': (context) => MainScaffold(
-          title: 'Settings',
-          child: SettingsPage(),
-        ),
-      },
+      home: const MainScaffold(),
     );
   }
 }
 
-class MainScaffold extends StatelessWidget {
-  final Widget? child;
-  final String title;
+class MainScaffold extends StatefulWidget {
+  const MainScaffold({super.key});
 
-  const MainScaffold({super.key, this.child, required this.title});
+  @override
+  State<MainScaffold> createState() => _MainScaffoldState();
+}
+
+class _MainScaffoldState extends State<MainScaffold> {
+  int _selectedIndex = 1;
+
+  // list of pages for bottom navigation
+  final List<Widget> _pages = [
+    AddUnitPage(),
+    SimulationPage(),
+    UnitLibraryPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
+        title: Text('MathHammer'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => Navigator.of(context).pushReplacementNamed('/settings'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+
+              );
+            }
           ),
         ],
       ),
-      body: child ?? _buildHomePage(context),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) => setState(() => _selectedIndex = index), // also thanks Prof Henderson
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.library_add),
@@ -79,44 +91,29 @@ class MainScaffold extends StatelessWidget {
             label: 'Unit Library',
           ),
         ],
-        onTap: (index) => _onNavTap(context, index),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.play_circle_filled),
-        onPressed: () {
-          null; // TODO: implement simulation start
-        },
-      ),
+      floatingActionButton: _fabBuilder(),
     );
+    
   }
 
-  void _onNavTap(BuildContext context, int index) {
-    final routes = ['/addUnit', '/', '/library'];
-    if (routes[index] != null) {
-      Navigator.of(context).pushReplacementNamed(routes[index]!);
+  // helper to handle the different FABs for each page 
+  Widget? _fabBuilder() {
+    switch (_selectedIndex) {
+        case 1:
+          return FloatingActionButton(
+            child: const Icon(Icons.play_arrow),
+            onPressed: () {
+              null; // TODO: implement starting a simulation
+            },
+          );
+        case 2:
+          return FloatingActionButton( // Thanks for the idea Prof Henderson
+            child: const Icon(Icons.add),
+            onPressed: () {
+              setState(() => _selectedIndex = 0);
+            },
+          );  
     }
-  }
-
-  Widget _buildHomePage(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            'Welcome to MathHammer!',
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-        ),
-        Expanded(
-          child: GridView.builder( // display unit cards used in the current simulation, placeholder for now
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-            ),
-            itemCount: 2,
-            itemBuilder: (context, index) => const UnitCardBase(),
-          ),
-        ),
-      ],
-    );
   }
 }
