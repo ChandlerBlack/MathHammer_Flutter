@@ -14,14 +14,14 @@ class _UnitLibraryPageState extends State<UnitLibraryPage> {
       body: Column(
         children: [
           Text("Unit Library Page"),
-          FloatingActionButton( // TODO: need to move this to the bottom right corner
-            child: Icon(Icons.add),
-            onPressed: () {
-              Navigator.of(context).pushNamed('/addUnit');
-            },
-          ),
         ],
-      )
+      ),
+      floatingActionButton: FloatingActionButton( // Thanks for the idea Prof Henderson
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.of(context).pushNamed('/addUnit');
+        },
+      ),
     );
   }
 }

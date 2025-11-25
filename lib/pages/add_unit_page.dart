@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathhammer/widgets/new_unit%20_forum.dart';
 
 class AddUnitPage extends StatefulWidget {
   const AddUnitPage({super.key});
@@ -19,8 +20,12 @@ class _AddUnitPageState extends State<AddUnitPage> {
      3. Button to save the unit to the database
      4. Possibly a preview of the unit being added
     */ 
-    return Center( child: Wrap( children: [
-      Text("Add Unit Page")
-    ]));
+    return Center( 
+      child: Wrap( 
+        children: [
+          NewUnitForum()
+        ]
+      )
+    );
   }
 }
