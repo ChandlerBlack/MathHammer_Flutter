@@ -99,7 +99,9 @@ class _NewUnitForumState extends State<NewUnitForum> {
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(labelText: label),
-        keyboardType: TextInputType.number, // found this, so that only numbers can be entered
+        keyboardType: controller == _nameController
+          ? TextInputType.text
+          : TextInputType.number, // found this, so that only numbers can be entered for all other fields
         validator: (value) => 
           value?.isEmpty ?? true ? 'Required $label' : null,
       ),

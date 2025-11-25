@@ -39,6 +39,7 @@ Future<void> initDatabase() async {
       await db.execute('''
         CREATE TABLE $tableWeapons (
           id TEXT PRIMARY KEY,
+          unitId TEXT NOT NULL,
           name TEXT NOT NULL,
           attacks INTEGER NOT NULL,
           strength INTEGER NOT NULL,
