@@ -40,6 +40,7 @@ class UnitCardFull extends StatelessWidget {
               ),
             ),
             Padding(
+              // a lot of this will be changed when the database is hooked up
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
