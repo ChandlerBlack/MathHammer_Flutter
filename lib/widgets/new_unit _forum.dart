@@ -3,6 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mathhammer/pages/camera_page.dart';
+import '../database/db.dart';
+import '../models/unit_stats.dart';
+import 'dart:math';
 class NewUnitForum extends StatefulWidget {
   const NewUnitForum({super.key});
 
@@ -20,6 +23,9 @@ class _NewUnitForumState extends State<NewUnitForum> {
   final _leadershipController = TextEditingController();
   final _objectiveController = TextEditingController();
   final _modelController = TextEditingController();
+
+  var random = Random();
+
   
   File? _imagefile;
 
@@ -36,6 +42,10 @@ class _NewUnitForumState extends State<NewUnitForum> {
     super.dispose();
   }
 
+  int generateId() {
+    return random.nextInt(100000);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -44,29 +54,32 @@ class _NewUnitForumState extends State<NewUnitForum> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // TODO: On tap of the image, open camera page to take picture
-            Card(
-              child: InkWell(
-                onTap: () async {
-                  // Navigate to camera page and await the result
-                  final result = await Navigator.push<File?>(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CameraPage()),
-                  );
-                  if (result != null) {
-                    setState(() {
-                      _imagefile = result;
-                    });
-                  }
-                },
-                child: _imagefile == null // if no image, show placeholder
-                  ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(100.0),
-                      child: Icon(Icons.image_not_supported_sharp, size: 100, color: Colors.grey),
-                    ),
-                  )
-                  : Image.file(_imagefile!),
+            SizedBox(
+              height: 300,
+              width: 300,
+              child: Card(
+                child: InkWell(
+                  onTap: () async {
+                    // Navigate to camera page and await the result
+                    final result = await Navigator.push<File?>(
+                      context,
+                      MaterialPageRoute(builder: (context) => const CameraPage()),
+                    );
+                    if (result != null) {
+                      setState(() {
+                        _imagefile = result;
+                      });
+                    }
+                  },
+                  child: _imagefile == null // if no image, show placeholder
+                    ? const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(100.0),
+                        child: Icon(Icons.image_not_supported_sharp, size: 100, color: Colors.grey),
+                      ),
+                    )
+                    : Image.file(_imagefile!),
+                ),
               ),
             ),
 
@@ -76,7 +89,6 @@ class _NewUnitForumState extends State<NewUnitForum> {
             // grid of inputs for the stats
             GridView.count(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(), // to prevent scrolling inside the form
               crossAxisCount: 3,
               childAspectRatio: 1.5, // to make the fields wider
               children: [
@@ -92,14 +104,60 @@ class _NewUnitForumState extends State<NewUnitForum> {
             const SizedBox(height: 16.0),
             // Save Button
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  // TODO: Save the unit
+                  try {
+                    final newUnit = Unit(
+                      id: generateId().toString(),
+                      name: _nameController.text,
+                      movement: int.parse(_movementController.text),
+                      toughness: int.parse(_toughnessController.text),
+                      save: int.parse(_saveController.text),
+                      wounds: int.parse(_woundsController.text),
+                      leadership: int.parse(_leadershipController.text),
+                      objectiveControl: int.parse(_objectiveController.text),
+                      modelCount: int.parse(_modelController.text),
+                      rangedWeapons: [],
+                      meleeWeapons: [],
+                      imagePath: _imagefile?.path,
+                    );
+                    
+                    await insertUnit(newUnit);
+
+                    if (context.mounted) {
+                      // successful save
+                      ScaffoldMessenger.of(context).showSnackBar( 
+                        const SnackBar(
+                        content: Text('Unit saved successfully'),
+                        duration: Duration(milliseconds: 700),
+                        backgroundColor: Colors.green,
+                      ));
+
+                      // clear the form
+                      _formKey.currentState!.reset();
+                      setState(() {
+                        _imagefile = null;
+                      });
+
+                    }
+                  } catch (e) {
+                    // show error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Error saving unit: $e'),
+                        backgroundColor: Colors.red,
+                        duration: const Duration(milliseconds: 700),
+                      ),
+                    );
+                  }
                 }
                 else {
                   // show error message
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please fill out all required fields')),
+                    const SnackBar(content: Text('Please fill out all required fields'),
+                      backgroundColor: Colors.red,
+                      duration: const Duration(milliseconds: 700),
+                    ),
                   );
                 }
               },

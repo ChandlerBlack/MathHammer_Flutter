@@ -1,25 +1,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:mathhammer/pages/settings_page.dart';
-import 'package:mathhammer/widgets/unit_card_base.dart';
+import 'package:mathhammer/models/unit_stats.dart';
 import 'pages/add_unit_page.dart';
 import 'pages/unit_library_page.dart';
 import 'pages/simulation_page.dart';
-import 'pages/camera_page.dart';
 import 'package:mathhammer/database/db.dart';
-
-// Global TODO: 
-// 1. Set up local database to store unit information using sqflite
-// 2. Implement camera functionality to take pictures of units
-// 3. Build out Add Unit Page form and camera preview
-// 4. Improve Unit Library Page layout and functionality
-// 5. Implement selection of units and running simulations between them
-// 6. Implement settings page to adjust app preferences
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize the database
-  await initDatabase(); // Uncomment when database code is ready
+  await initDatabase(); 
   runApp(const MyApp());
 }
 
@@ -46,12 +36,50 @@ class MainScaffold extends StatefulWidget {
 
 class _MainScaffoldState extends State<MainScaffold> {
   int _selectedIndex = 1;
+  Unit? _selectedUnit1;
+  Unit? _selectedUnit2;
+
+  void _selectUnitForSimulation(Unit unit, int slot) {
+    setState(() {
+      if (slot == 1) {
+        _selectedUnit1 = unit;
+      } else if (slot == 2) {
+        _selectedUnit2 = unit;
+      }
+    });
+  }
+
+  void _clearSimulationSlot(int slot) {
+    setState(() {
+      if (slot == 1) {
+        _selectedUnit1 = null;
+      } else if (slot == 2) {
+        _selectedUnit2 = null;
+      }
+    });
+  }
+
+  void _navigateToPage(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   // list of pages for bottom navigation
-  final List<Widget> _pages = [
+  List<Widget> get _pages => [
     AddUnitPage(),
-    SimulationPage(),
-    UnitLibraryPage(),
+    SimulationPage(
+      unit1: _selectedUnit1,
+      unit2: _selectedUnit2,
+      onClearSlot: _clearSimulationSlot,
+      onNavigateToLibrary: () => _navigateToPage(2),
+    ),
+    UnitLibraryPage(
+      onSelectUnit: _selectUnitForSimulation,
+      selectedUnit1: _selectedUnit1,
+      selectedUnit2: _selectedUnit2,
+      onNavigateToSimulation: () => _navigateToPage(1),
+    ),
   ];
 
   @override
@@ -113,7 +141,9 @@ class _MainScaffoldState extends State<MainScaffold> {
             onPressed: () {
               setState(() => _selectedIndex = 0);
             },
-          );  
+          );
+        default:
+          return null;
     }
   }
 }

@@ -8,8 +8,21 @@ import '../models/unit_stats.dart';
 
 class UnitCardBase extends StatelessWidget {
   final Unit? unit;
+  final VoidCallback? onReturn;
+  final Function(Unit, int)? onSelectForSimulation;
+  final Unit? selectedUnit1;
+  final Unit? selectedUnit2;
+  final VoidCallback? onNavigateToSimulation;
 
-  const UnitCardBase({super.key, this.unit});
+  const UnitCardBase({
+    super.key,
+    this.unit,
+    required this.onReturn,
+    this.onSelectForSimulation,
+    this.selectedUnit1,
+    this.selectedUnit2,
+    this.onNavigateToSimulation,
+  });
 
 
   @override
@@ -23,13 +36,22 @@ class UnitCardBase extends StatelessWidget {
     }
     return Card(
       child: InkWell(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => UnitCardFull(unit: unit!),
+              builder: (context) => UnitCardFull(
+                unit: unit!,
+                onSelectForSimulation: onSelectForSimulation,
+                selectedUnit1: selectedUnit1,
+                selectedUnit2: selectedUnit2,
+                onNavigateToSimulation: onNavigateToSimulation,
+              ),
             ),
           );
+          if (result == true && onReturn != null) {
+            onReturn!();
+          }
         },
         child: Hero(
           tag: 'unit_${unit!.name}',

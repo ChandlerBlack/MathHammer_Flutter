@@ -4,16 +4,130 @@
 import 'package:flutter/material.dart';
 import '../models/unit_stats.dart';
 import 'dart:io';
+import '../database/db.dart';
 class UnitCardFull extends StatelessWidget {
-  const UnitCardFull({super.key, required this.unit});
-
   final Unit unit;
+  final Function(Unit, int)? onSelectForSimulation;
+  final Unit? selectedUnit1;
+  final Unit? selectedUnit2;
+  final VoidCallback? onNavigateToSimulation;
+
+  const UnitCardFull({
+    super.key,
+    required this.unit,
+    this.onSelectForSimulation,
+    this.selectedUnit1,
+    this.selectedUnit2,
+    this.onNavigateToSimulation,
+  });
+
+  Future<void> _showSlotSelectionDialog(BuildContext context) async {
+    final int? selectedSlot = await showDialog<int>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Select Slot'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.filter_1),
+                title: Text('Slot 1 ${selectedUnit1 != null ? "(${selectedUnit1!.name})" : "(Empty)"}'),
+                onTap: () => Navigator.of(dialogContext).pop(1),
+              ),
+              ListTile(
+                leading: const Icon(Icons.filter_2),
+                title: Text('Slot 2 ${selectedUnit2 != null ? "(${selectedUnit2!.name})" : "(Empty)"}'),
+                onTap: () => Navigator.of(dialogContext).pop(2),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (selectedSlot != null && context.mounted) {
+      onSelectForSimulation!(unit, selectedSlot);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${unit.name} added to Slot $selectedSlot'),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+      
+      if (onNavigateToSimulation != null) {
+        Navigator.of(context).pop();
+        onNavigateToSimulation!();
+      }
+    }
+  }
+
+  Future<void> _deleteConfirmation(BuildContext context) async {
+    final bool? shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Delete Unit'),
+          content: Text('Are you sure you want to delete ${unit.name}? This action cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed:() => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed:() => Navigator.of(dialogContext).pop(true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+    if (shouldDelete == true && context.mounted) {
+      try {
+        await deleteUnit(unit.id);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${unit.name} has been deleted.'),
+              duration: const Duration(milliseconds: 700),
+            ),
+          );
+          Navigator.of(context).pop(true);
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error deleting unit: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(unit.name),
+        actions: [
+          if (onSelectForSimulation != null)
+            IconButton(
+              icon: const Icon(Icons.add_circle_outline),
+              tooltip: 'Add to Simulation',
+              onPressed: () => _showSlotSelectionDialog(context),
+            ),
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: () => _deleteConfirmation(context),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -53,7 +167,6 @@ class UnitCardFull extends StatelessWidget {
                   Text('Objective Control: ${unit.objectiveControl}', style: Theme.of(context).textTheme.titleMedium),
                   Text('Model Count: ${unit.modelCount}', style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 16),
-                  // TODO: Add weapon stats, abilities, etc.
                 ],
               ),
             ),

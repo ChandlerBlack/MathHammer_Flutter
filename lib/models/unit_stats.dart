@@ -33,7 +33,7 @@ class Unit {
   }); 
 
 
-  // Json helpers
+  // Json helpers - I want to keeps these for future options like exporting units that I might implement after this course
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -71,5 +71,46 @@ class Unit {
           .toList(),
     );
   } 
+
+
+  // Map converters for database storage
+
+  // weapons are stored in a separate table
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'imagePath': imagePath,
+      'movement': movement,
+      'toughness': toughness,
+      'save': save,
+      'wounds': wounds,
+      'leadership': leadership,
+      'objectiveControl': objectiveControl,
+      'modelCount': modelCount,
+    };
+  }
+
+  factory Unit.fromMap(
+    Map<String, dynamic> map,
+    List<Weapons> rangedWeapons,
+    List<Weapons> meleeWeapons,
+  ) {
+    return Unit(
+      id: map['id'],
+      name: map['name'],
+      imagePath: map['imagePath'],
+      movement: map['movement'],
+      toughness: map['toughness'],
+      save: map['save'],
+      wounds: map['wounds'],
+      leadership: map['leadership'],
+      objectiveControl: map['objectiveControl'],
+      modelCount: map['modelCount'],
+      rangedWeapons: rangedWeapons,
+      meleeWeapons: meleeWeapons,
+    );
+  }
+
 
 }
