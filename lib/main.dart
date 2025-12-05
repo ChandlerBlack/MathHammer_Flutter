@@ -2,15 +2,35 @@
 import 'package:flutter/material.dart';
 import 'package:mathhammer/pages/settings_page.dart';
 import 'package:mathhammer/models/unit_stats.dart';
+import 'package:provider/provider.dart';
 import 'pages/add_unit_page.dart';
 import 'pages/unit_library_page.dart';
 import 'pages/simulation_page.dart';
 import 'package:mathhammer/database/db.dart';
+import 'package:mathhammer/theme.dart';
+import 'package:mathhammer/settings_manager.dart';
+
+
+/*
+  ToDo: 
+  - Add sound effects (button clicks, simulation sounds)
+  - Improve UI/UX (animations,custom icons, custom fonts)
+  - implement sim 
+ */
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDatabase(); 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeManager()),
+        ChangeNotifierProvider(create: (_) => SettingsManager()),
+      ],
+      child: const MyApp(),
+    )
+  );
 }
 
 
@@ -19,9 +39,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeManager = Provider.of<ThemeManager>(context);
     return MaterialApp(
       title: 'MathHammer',
-      theme: ThemeData.dark(),
+      theme: ThemeManager.lightTheme,
+      darkTheme: ThemeManager.darkTheme,
+      themeMode: themeManager.themeMode,
       home: const MainScaffold(),
     );
   }
@@ -132,7 +155,12 @@ class _MainScaffoldState extends State<MainScaffold> {
           return FloatingActionButton(
             child: const Icon(Icons.play_arrow),
             onPressed: () {
-              null; // TODO: implement starting a simulation
+              if (_selectedUnit1 != null && _selectedUnit2 != null) {
+                SnackBar(content: Text('Starting Simulation...'), backgroundColor: Colors.green, duration: Durations.short1,);
+                // add call to sim 
+              } else {
+                SnackBar(content: Text('Please select two units for simulation.'), backgroundColor: Colors.red,);
+              }
             },
           );
         case 2:

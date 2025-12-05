@@ -1,10 +1,5 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:sqflite/utils/utils.dart';
 import '../models/unit_stats.dart';
 import '../models/weapon_stats.dart';
 
@@ -195,3 +190,77 @@ Future<void> deleteUnit(String id) async {
   print('Unit deleted with id: $id'); // debug
 }
 
+
+
+
+// query units in alphabetical order
+Future<List<Unit>> getUnitsAlphabetical() async {
+  print('Fetching units in alphabetical order'); // debug
+
+  final List<Map<String, dynamic>> unitMaps = await database.query(
+    tableUnits,
+    orderBy: 'name ASC',
+  );
+  print('Found Units, total count: ${unitMaps.length}'); // debug
+
+  List<Unit> units = [];
+
+  for (var unitMap in unitMaps) {
+    final String unitId = unitMap['id'];
+    final List<Map<String, dynamic>> weaponMap = await database.query(
+      tableWeapons,
+      where: 'unitId = ?',
+      whereArgs: [unitId],
+    );
+
+    List<Weapons> allWeapons = weaponMap
+        .map((weaponMap) => Weapons.fromMap(weaponMap))
+        .toList();
+
+    units.add(Unit.fromMap(
+      unitMap,
+      allWeapons, 
+      [],
+    ));
+  }
+  print('Total units fetched: ${units.length}'); // debug
+  return units;
+}
+
+
+
+
+
+// query units in reverse alphabetical order
+Future<List<Unit>> getUnitsReverseAlphabetical() async {
+  print('Fetching units in reverse alphabetical order'); // debug
+
+  final List<Map<String, dynamic>> unitMaps = await database.query(
+    tableUnits,
+    orderBy: 'name DESC',
+  );
+  print('Found Units, total count: ${unitMaps.length}'); // debug
+
+  List<Unit> units = [];
+
+  for (var unitMap in unitMaps) {
+    final String unitId = unitMap['id'];
+    final List<Map<String, dynamic>> weaponMap = await database.query(
+      tableWeapons,
+      where: 'unitId = ?',
+      whereArgs: [unitId],
+    );
+
+    List<Weapons> allWeapons = weaponMap
+        .map((weaponMap) => Weapons.fromMap(weaponMap))
+        .toList();
+
+    units.add(Unit.fromMap(
+      unitMap,
+      allWeapons, 
+      [],
+    ));
+  }
+  print('Total units fetched: ${units.length}'); // debug
+  return units;
+}

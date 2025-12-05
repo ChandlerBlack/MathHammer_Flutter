@@ -74,14 +74,20 @@ class _NewUnitForumState extends State<NewUnitForum> {
                   child: _imagefile == null // if no image, show placeholder
                     ? const Center(
                       child: Padding(
-                        padding: EdgeInsets.all(100.0),
-                        child: Icon(Icons.image_not_supported_sharp, size: 100, color: Colors.grey),
+                        padding: EdgeInsets.all(80.0),
+                        child: Column(
+                          children: [
+                            Icon(Icons.image_not_supported_sharp, size: 100, color: Colors.grey),
+                            Text('Tap to add image', style: TextStyle(color: Colors.grey)),
+                          ],
+                        ),
                       ),
                     )
                     : Image.file(_imagefile!),
                 ),
               ),
             ),
+
 
             // Unit Name
             _fieldBuilder('Unit Name:', _nameController),
@@ -162,6 +168,7 @@ class _NewUnitForumState extends State<NewUnitForum> {
                 }
               },
               child: const Text('Save'),
+
             ),
           ]
         )

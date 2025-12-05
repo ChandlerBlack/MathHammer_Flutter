@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mathhammer/widgets/unit_card_base.dart';
 import '../models/unit_stats.dart';
 import '../database/db.dart';
+import 'package:provider/provider.dart';
+import '../settings_manager.dart';
 
 class UnitLibraryPage extends StatefulWidget{
   final Function(Unit, int)? onSelectUnit;
@@ -23,13 +25,23 @@ class UnitLibraryPage extends StatefulWidget{
 
 // TODO: link to database to fetch all stored units
 class _UnitLibraryPageState extends State<UnitLibraryPage> {
-  // Dummy units for testing 
   void _refreshUnits() async {
     setState(() {});
   }
 
+  Future<List<Unit>> _getUnits() async {
+    final settingsManager = Provider.of<SettingsManager>(context, listen: false);
+    if (settingsManager.isAlphabetical) {
+      return getUnitsAlphabetical();
+    } else {
+      return getUnitsReverseAlphabetical();
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final settingsManager = Provider.of<SettingsManager>(context);
     return Scaffold(
       body: Column(
         children: [
@@ -51,7 +63,8 @@ class _UnitLibraryPageState extends State<UnitLibraryPage> {
           ),
           Expanded(
             child: FutureBuilder<List<Unit>>(
-              future: getAllUnits(),
+              key: ValueKey(settingsManager.sortOrder),
+              future: _getUnits(),
               builder:(context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) { // waiting for units
                   return const Center(child: CircularProgressIndicator());

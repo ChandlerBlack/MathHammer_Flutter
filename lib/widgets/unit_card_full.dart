@@ -117,12 +117,6 @@ class UnitCardFull extends StatelessWidget {
       appBar: AppBar(
         title: Text(unit.name),
         actions: [
-          if (onSelectForSimulation != null)
-            IconButton(
-              icon: const Icon(Icons.add_circle_outline),
-              tooltip: 'Add to Simulation',
-              onPressed: () => _showSlotSelectionDialog(context),
-            ),
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () => _deleteConfirmation(context),
@@ -154,7 +148,6 @@ class UnitCardFull extends StatelessWidget {
               ),
             ),
             Padding(
-              // a lot of this will be changed when the database is hooked up
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,6 +162,13 @@ class UnitCardFull extends StatelessWidget {
                   const SizedBox(height: 16),
                 ],
               ),
+            ),
+            ElevatedButton(
+              onPressed: () => _showSlotSelectionDialog(context), 
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
+                textStyle: const TextStyle(fontSize: 18),
+              ), child:   const Text('Select for Simulation'),
             ),
           ],
         ),
