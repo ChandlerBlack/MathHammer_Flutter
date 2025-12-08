@@ -9,12 +9,13 @@ import 'pages/simulation_page.dart';
 import 'package:mathhammer/database/db.dart';
 import 'package:mathhammer/theme.dart';
 import 'package:mathhammer/settings_manager.dart';
+import 'package:audioplayers/audioplayers.dart' as ap;
+import 'package:flutter/services.dart';
 
 
 /*
   ToDo: 
-  - Add sound effects (button clicks, simulation sounds)
-  - Improve UI/UX (animations,custom icons, custom fonts)
+  - Improve UI/UX (animations)
   - implement sim 
  */
 
@@ -58,6 +59,24 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
+
+  static final List<ap.AudioPlayer> _lowLatencyPlayers = []; // all this is to allow multiple sounds to play at once
+  static const int _maxLowLatencyPlayers = 5;
+  static int _currentPlayerIndex = 0;
+
+  static Future<ap.AudioPlayer> _getLowLatencyPlayer() async {
+    if (_lowLatencyPlayers.length < _maxLowLatencyPlayers) {
+      final newPlayer = ap.AudioPlayer();
+      _lowLatencyPlayers.add(newPlayer);
+      return newPlayer;
+    }
+    // If all players are busy, return the next one in the list
+    final player = _lowLatencyPlayers[_currentPlayerIndex];
+    _currentPlayerIndex = (_currentPlayerIndex + 1) % _maxLowLatencyPlayers; 
+    return player;
+  }
+
+
   int _selectedIndex = 1;
   Unit? _selectedUnit1;
   Unit? _selectedUnit2;
@@ -127,7 +146,10 @@ class _MainScaffoldState extends State<MainScaffold> {
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: (index) => setState(() => _selectedIndex = index), // also thanks Prof Henderson
+        onTap: (index) {
+          setState(() => _selectedIndex = index); // also thanks Prof Henderson
+          HapticFeedback.heavyImpact();
+        },   
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.library_add),
@@ -161,6 +183,8 @@ class _MainScaffoldState extends State<MainScaffold> {
               } else {
                 SnackBar(content: Text('Please select two units for simulation.'), backgroundColor: Colors.red,);
               }
+              HapticFeedback.heavyImpact();
+              _getLowLatencyPlayer().then((player) => player.play(ap.AssetSource('sounds/For the emperor.mp3')));
             },
           );
         case 2:
@@ -168,10 +192,15 @@ class _MainScaffoldState extends State<MainScaffold> {
             child: const Icon(Icons.add),
             onPressed: () {
               setState(() => _selectedIndex = 0);
+              HapticFeedback.heavyImpact();
             },
           );
         default:
           return null;
     }
   }
+
+
+
+
 }

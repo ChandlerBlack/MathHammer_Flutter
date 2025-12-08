@@ -23,7 +23,6 @@ class UnitLibraryPage extends StatefulWidget{
   State<UnitLibraryPage> createState() => _UnitLibraryPageState();  
 }
 
-// TODO: link to database to fetch all stored units
 class _UnitLibraryPageState extends State<UnitLibraryPage> {
   void _refreshUnits() async {
     setState(() {});

@@ -57,15 +57,41 @@ class UnitCardBase extends StatelessWidget {
           tag: 'unit_${unit!.name}',
           child: Material(
             color: Colors.transparent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                unit!.imagePath != null
-                    ? Image.file(File(unit!.imagePath!), height: 100)
-                    : Icon(Icons.image_not_supported_rounded, size: 100, color: Colors.grey),
-                const SizedBox(height: 8),
-                Text(unit!.name, style: Theme.of(context).textTheme.titleMedium),
-              ]
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                Container(
+                    height: 120,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      color: Colors.grey[300],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: unit!.imagePath != null
+                          ? Image.file(
+                              File(unit!.imagePath!),
+                              fit: BoxFit.cover,
+                          )
+                        : Icon(Icons.image_not_supported_rounded, size: 120, color: Colors.grey),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      unit!.name,
+                      style: Theme.of(context).textTheme.titleLarge,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                ),
+                ],
+              ),
             ),
           ),
         ),

@@ -63,7 +63,7 @@ class SimulationPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.add_circle_outline, size: 64, color: Colors.grey),
+              Icon(Icons.add_circle_outline_sharp, size: 64, color: Colors.grey),
               const SizedBox(height: 8),
               Text('Select Unit $slotNumber', style: TextStyle(color: Colors.grey)),
             ],

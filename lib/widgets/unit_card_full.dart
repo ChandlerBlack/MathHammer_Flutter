@@ -137,11 +137,19 @@ class UnitCardFull extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      unit.imagePath != null
-                          ? Image.file(File(unit.imagePath!), height: 300, fit: BoxFit.contain)
-                          : Icon(Icons.image_not_supported_rounded, size: 200, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text(unit.name, style: Theme.of(context).textTheme.headlineMedium),
+                      Flexible(
+                        child: unit.imagePath != null
+                            ? Image.file(File(unit.imagePath!), height: 250, width: 250, fit: BoxFit.contain)
+                            : Icon(Icons.image_not_supported_sharp, size: 250, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        unit.name,
+                        style: Theme.of(context).textTheme.headlineLarge,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
                     ],
                   ),
                 ),

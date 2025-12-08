@@ -6,6 +6,11 @@ import 'package:mathhammer/pages/camera_page.dart';
 import '../database/db.dart';
 import '../models/unit_stats.dart';
 import 'dart:math';
+import 'package:audioplayers/audioplayers.dart' as ap;
+import 'package:flutter/services.dart';
+
+
+
 class NewUnitForum extends StatefulWidget {
   const NewUnitForum({super.key});
 
@@ -46,6 +51,22 @@ class _NewUnitForumState extends State<NewUnitForum> {
     return random.nextInt(100000);
   }
 
+  static final List<ap.AudioPlayer> _lowLatencyPlayers = []; // all this is to allow multiple sounds to play at once
+  static const int _maxLowLatencyPlayers = 5;
+  static int _currentPlayerIndex = 0;
+
+  static Future<ap.AudioPlayer> _getLowLatencyPlayer() async {
+    if (_lowLatencyPlayers.length < _maxLowLatencyPlayers) {
+      final newPlayer = ap.AudioPlayer();
+      _lowLatencyPlayers.add(newPlayer);
+      return newPlayer;
+    }
+    // If all players are busy, return the next one in the list
+    final player = _lowLatencyPlayers[_currentPlayerIndex];
+    _currentPlayerIndex = (_currentPlayerIndex + 1) % _maxLowLatencyPlayers; 
+    return player;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -70,6 +91,7 @@ class _NewUnitForumState extends State<NewUnitForum> {
                         _imagefile = result;
                       });
                     }
+                    HapticFeedback.heavyImpact();
                   },
                   child: _imagefile == null // if no image, show placeholder
                     ? const Center(
@@ -144,7 +166,7 @@ class _NewUnitForumState extends State<NewUnitForum> {
                       setState(() {
                         _imagefile = null;
                       });
-
+                      _getLowLatencyPlayer().then((player) => player.play(ap.AssetSource('sounds/Objective achieved.mp3')));
                     }
                   } catch (e) {
                     // show error message
@@ -159,6 +181,7 @@ class _NewUnitForumState extends State<NewUnitForum> {
                 }
                 else {
                   // show error message
+                  _getLowLatencyPlayer().then((player) => player.play(ap.AssetSource('sounds/Awaiting orders.mp3')));
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Please fill out all required fields'),
                       backgroundColor: Colors.red,
@@ -166,6 +189,8 @@ class _NewUnitForumState extends State<NewUnitForum> {
                     ),
                   );
                 }
+                HapticFeedback.heavyImpact();
+
               },
               child: const Text('Save'),
 
