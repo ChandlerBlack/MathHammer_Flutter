@@ -4,11 +4,15 @@ enum WeaponType {
 }
 
 enum WeaponKeyword {
-  rapidFire,
+  rapidFire1,
+  rapidFire2,
+  rapidFire3,
   assault,
   heavy,
   pistol,
-  melta,
+  melta1,
+  melta2,
+  melta3,
   lance,
   blast,
   twinLinked,
@@ -16,17 +20,26 @@ enum WeaponKeyword {
   devastatingWounds,
   precision,
   lethalHits,
-  sustainedHits,
-  antiFly,
-  antiInfantry,
-  antiMonster,
-  antiVehicle,
+  sustainedHits1,
+  sustainedHits2,
+  sustainedHits3,
+  antiFly2,
+  antiFly3,
+  antiFly4,
+  antiInfantry2,
+  antiInfantry3,
+  antiInfantry4,
+  antiMonster2,
+  antiMonster3,
+  antiMonster4,
+  antiVehicle2,
+  antiVehicle3,
+  antiVehicle4,
   indirectFire,
   oneShot,
 }
 
 class Weapons {
-    // Used in database
   final String id;
   final String name;
   final int attacks;
@@ -84,7 +97,7 @@ class Weapons {
       keywords: (json['keywords'] as List?)
               ?.map((k) => WeaponKeyword.values.firstWhere(
                     (e) => e.name == k,
-                    orElse: () => WeaponKeyword.rapidFire,
+                    orElse: () => WeaponKeyword.rapidFire1,
                   ))
               .toList() ??
           [],

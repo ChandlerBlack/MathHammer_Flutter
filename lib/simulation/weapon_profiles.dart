@@ -3,108 +3,17 @@ import '../models/weapon_stats.dart';
 // This is a set of default weapons for this version of the app. In later versions, the user will be able to create custom weapons.
 class WeaponProfiles {
   
-  static Weapons get standardRanged => Weapons(
-    id: 'standard_ranged',
-    name: 'Standard Ranged',
+  static Weapons get boltRifle => Weapons(
+    id: 'bolt_rifle',
+    name: 'Bolt Rifle',
     attacks: 2,
-    strength: 4,
-    ap: 0,
-    range: 24,
-    damage: 1,
-    ballisticSkill: 3,
-    type: WeaponType.ranged,
-    keywords: [],
-  );
-
-  static Weapons get heavyRanged => Weapons(
-    id: 'heavy_ranged',
-    name: 'Heavy Ranged',
-    attacks: 1,
-    strength: 8,
-    ap: 2,
-    range: 36,
-    damage: 2,
-    ballisticSkill: 3,
-    type: WeaponType.ranged,
-    keywords: [WeaponKeyword.heavy],
-  );
-
-  static Weapons get rapidRanged => Weapons(
-    id: 'rapid_ranged',
-    name: 'Rapid Fire',
-    attacks: 3,
     strength: 4,
     ap: 1,
     range: 24,
     damage: 1,
     ballisticSkill: 3,
     type: WeaponType.ranged,
-    keywords: [WeaponKeyword.rapidFire],
-  );
-
-  static Weapons get eliteRanged => Weapons(
-    id: 'elite_ranged',
-    name: 'Elite Ranged',
-    attacks: 2,
-    strength: 5,
-    ap: 2,
-    range: 30,
-    damage: 2,
-    ballisticSkill: 2,
-    type: WeaponType.ranged,
-    keywords: [WeaponKeyword.lethalHits],
-  );
-
-  static Weapons get assaultRanged => Weapons(
-    id: 'assault_ranged',
-    name: 'Assault',
-    attacks: 3,
-    strength: 3,
-    ap: 0,
-    range: 18,
-    damage: 1,
-    ballisticSkill: 3,
-    type: WeaponType.ranged,
-    keywords: [WeaponKeyword.assault, WeaponKeyword.sustainedHits],
-  );
-
-  static Weapons get meltaWeapon => Weapons(
-    id: 'melta_weapon',
-    name: 'Melta Weapon',
-    attacks: 1,
-    strength: 9,
-    ap: 4,
-    range: 12,
-    damage: 3,
-    ballisticSkill: 3,
-    type: WeaponType.ranged,
-    keywords: [WeaponKeyword.melta],
-  );
-
-  static Weapons get plasmaWeapon => Weapons(
-    id: 'plasma_weapon',
-    name: 'Plasma Weapon',
-    attacks: 1,
-    strength: 7,
-    ap: 3,
-    range: 24,
-    damage: 2,
-    ballisticSkill: 3,
-    type: WeaponType.ranged,
-    keywords: [WeaponKeyword.hazardous],
-  );
-
-  static Weapons get sniperRifle => Weapons(
-    id: 'sniper_rifle',
-    name: 'Sniper Rifle',
-    attacks: 1,
-    strength: 5,
-    ap: 2,
-    range: 36,
-    damage: 2,
-    ballisticSkill: 3,
-    type: WeaponType.ranged,
-    keywords: [WeaponKeyword.precision, WeaponKeyword.lethalHits],
+    keywords: [WeaponKeyword.assault, WeaponKeyword.heavy],
   );
 
   static Weapons get heavyBolter => Weapons(
@@ -117,14 +26,105 @@ class WeaponProfiles {
     damage: 2,
     ballisticSkill: 3,
     type: WeaponType.ranged,
-    keywords: [WeaponKeyword.sustainedHits, WeaponKeyword.heavy],
+    keywords: [WeaponKeyword.heavy, WeaponKeyword.sustainedHits1, WeaponKeyword.devastatingWounds],
+  );
+
+  static Weapons get stormBolter => Weapons(
+    id: 'storm_bolter',
+    name: 'Storm Bolter',
+    attacks: 2,
+    strength: 4,
+    ap: 0,
+    range: 24,
+    damage: 1,
+    ballisticSkill: 3,
+    type: WeaponType.ranged,
+    keywords: [WeaponKeyword.rapidFire2],
+  );
+
+  static Weapons get boltSniperRifle => Weapons(
+    id: 'bolt_sniper_rifle',
+    name: 'Bolt Sniper Rifle',
+    attacks: 1,
+    strength: 5,
+    ap: 2,
+    range: 36,
+    damage: 3,
+    ballisticSkill: 3,
+    type: WeaponType.ranged,
+    keywords: [WeaponKeyword.heavy, WeaponKeyword.precision],
+  );
+
+  static Weapons get assaultCannon => Weapons(
+    id: 'assault_cannon',
+    name: 'Assault Cannon',
+    attacks: 6,
+    strength: 6,
+    ap: 0,
+    range: 24,
+    damage: 1,
+    ballisticSkill: 3,
+    type: WeaponType.ranged,
+    keywords: [WeaponKeyword.devastatingWounds],
+  );
+
+  static Weapons get meltaRifle => Weapons(
+    id: 'melta_rifle',
+    name: 'Melta Rifle',
+    attacks: 1,
+    strength: 9,
+    ap: 4,
+    range: 12,
+    damage: 6,
+    ballisticSkill: 3,
+    type: WeaponType.ranged,
+    keywords: [WeaponKeyword.melta2, WeaponKeyword.heavy],
+  );
+
+  static Weapons get plasmaIncinerator => Weapons(
+    id: 'plasma_incinerator',
+    name: 'Plasma Incinerator',
+    attacks: 2,
+    strength: 7,
+    ap: 2,
+    range: 24,
+    damage: 1,
+    ballisticSkill: 3,
+    type: WeaponType.ranged,
+    keywords: [WeaponKeyword.assault, WeaponKeyword.heavy],
+  );
+
+  static Weapons get lasFusil => Weapons(
+    id: 'las_fusil',
+    name: 'Las Fusil',
+    attacks: 1,
+    strength: 9,
+    ap: 3,
+    range: 36,
+    damage: 6,
+    ballisticSkill: 3,
+    type: WeaponType.ranged,
+    keywords: [WeaponKeyword.heavy],
+  );
+
+  static Weapons get Perdition => Weapons(
+    id: 'perdition',
+    name: 'Perdition',
+    attacks: 1,
+    strength: 9,
+    ap: 4,
+    range: 6,
+    damage: 6,
+    ballisticSkill: 2,
+    type: WeaponType.ranged,
+    keywords: [WeaponKeyword.sustainedHits3, WeaponKeyword.pistol, WeaponKeyword.melta2],
   );
 
   // Melee weapon profiles
   
-  static Weapons get standardMelee => Weapons(
-    id: 'standard_melee',
-    name: 'Standard Melee',
+  static Weapons get cCWeapon => Weapons(
+    id: 'cc_weapon',
+    name: 'Close Combat Weapon',
     attacks: 3,
     strength: 4,
     ap: 0,
@@ -138,7 +138,7 @@ class WeaponProfiles {
   static Weapons get powerWeapon => Weapons(
     id: 'power_weapon',
     name: 'Power Weapon',
-    attacks: 3,
+    attacks: 4,
     strength: 5,
     ap: 2,
     range: 0,
@@ -148,65 +148,65 @@ class WeaponProfiles {
     keywords: [],
   );
 
-  static Weapons get heavyMelee => Weapons(
-    id: 'heavy_melee',
-    name: 'Heavy Melee',
-    attacks: 2,
+  static Weapons get thunderHammer => Weapons(
+    id: 'thunder_hammer',
+    name: 'Thunder Hammer',
+    attacks: 3,
     strength: 8,
-    ap: 3,
+    ap: 2,
     range: 0,
-    damage: 3,
+    damage: 2,
     ballisticSkill: 4,
+    type: WeaponType.melee,
+    keywords: [WeaponKeyword.devastatingWounds],
+  );
+
+  static Weapons get chainsword => Weapons(
+    id: 'chainsword',
+    name: 'Chainsword',
+    attacks: 5,
+    strength: 4,
+    ap: 1,
+    range: 0,
+    damage: 1,
+    ballisticSkill: 3,
     type: WeaponType.melee,
     keywords: [],
   );
 
-  static Weapons get bruteMelee => Weapons(
-    id: 'brute_melee',
-    name: 'Brute Melee',
-    attacks: 4,
-    strength: 5,
-    ap: 1,
-    range: 0,
-    damage: 2,
-    ballisticSkill: 3,
-    type: WeaponType.melee,
-    keywords: [WeaponKeyword.sustainedHits],
-  );
-
-  static Weapons get eliteMelee => Weapons(
-    id: 'elite_melee',
-    name: 'Elite Melee',
-    attacks: 4,
-    strength: 6,
-    ap: 2,
+  static Weapons get theAxeMortalis => Weapons(
+    id: 'the_axe_mortalis',
+    name: 'The Axe Mortalis',
+    attacks: 8,
+    strength: 8,
+    ap: 3,
     range: 0,
     damage: 2,
     ballisticSkill: 2,
     type: WeaponType.melee,
-    keywords: [WeaponKeyword.lethalHits, WeaponKeyword.devastatingWounds],
+    keywords: [WeaponKeyword.lethalHits],
   );
 
   // Get all available ranged profiles
   static List<Weapons> get allRangedProfiles => [
-    standardRanged,
-    rapidRanged,
-    assaultRanged,
-    eliteRanged,
-    heavyRanged,
+    boltRifle,
     heavyBolter,
-    plasmaWeapon,
-    meltaWeapon,
-    sniperRifle,
+    stormBolter,
+    boltSniperRifle,
+    assaultCannon,
+    meltaRifle,
+    plasmaIncinerator,
+    lasFusil,
+    Perdition,
   ];
 
   // Get all available melee profiles
   static List<Weapons> get allMeleeProfiles => [
-    standardMelee,
+    cCWeapon,
     powerWeapon,
-    bruteMelee,
-    heavyMelee,
-    eliteMelee,
+    thunderHammer,
+    chainsword,
+    theAxeMortalis,
   ];
 
   // Get all profiles

@@ -27,8 +27,8 @@ class SimulationPage extends StatefulWidget {
 }
 
 class _SimulationPageState extends State<SimulationPage> {
-  String selectedWeaponIdUnit1 = 'standard_ranged';
-  String selectedWeaponIdUnit2 = 'standard_ranged';
+  String selectedWeaponIdUnit1 = 'bolt_rifle';
+  String selectedWeaponIdUnit2 = 'bolt_rifle';
   int numSimulations = 1000;
   Sim? _lastSimulation;
   bool _isRunning = false;
@@ -70,8 +70,8 @@ class _SimulationPageState extends State<SimulationPage> {
                       widget.onClearSlot(1);
                       widget.onClearSlot(2);
                       setState(() {
-                        selectedWeaponIdUnit1 = 'standard_ranged';
-                        selectedWeaponIdUnit2 = 'standard_ranged';
+                        selectedWeaponIdUnit1 = 'bolt_rifle';
+                        selectedWeaponIdUnit2 = 'bolt_rifle';
                         _lastSimulation = null;
                       });
                     },
@@ -99,7 +99,7 @@ class _SimulationPageState extends State<SimulationPage> {
                 children: [
                   const SizedBox(height: 16),
                   Text('Number of Simulations: $numSimulations', style: Theme.of(context).textTheme.titleMedium),
-                  Slider(
+                  Slider( // slider for the num of sims
                     value: numSimulations.toDouble(),
                     min: 10,
                     max: 1000,
@@ -116,7 +116,7 @@ class _SimulationPageState extends State<SimulationPage> {
                   const SizedBox(height: 8),
                   _isRunning
                       ? const CircularProgressIndicator()
-                      : ElevatedButton.icon(
+                      : ElevatedButton.icon( // run sim button
                           onPressed: () {
                             final settingsManager = Provider.of<SettingsManager>(context, listen: false);
                             if (settingsManager.soundEnabled) {
@@ -277,11 +277,7 @@ class _SimulationPageState extends State<SimulationPage> {
     );
   }
 
-  Widget _buildWinnerSummary(
-    BuildContext context,
-    Map<String, dynamic> unitA,
-    Map<String, dynamic> unitB,
-  ) {
+  Widget _buildWinnerSummary(BuildContext context, Map<String, dynamic> unitA, Map<String, dynamic> unitB) {
     final damageA = double.parse(unitA['avgDamageDealt']);
     final damageB = double.parse(unitB['avgDamageDealt']);
     final killedA = double.parse(unitA['avgModelsKilled']);
@@ -333,13 +329,7 @@ class _SimulationPageState extends State<SimulationPage> {
     );
   }
 
-  Widget _buildUnitResults(
-    BuildContext context,
-    String unitName,
-    UnitSimulationResults results,
-    Map<String, dynamic> avgResults,
-    dynamic weapon,
-  ) {
+  Widget _buildUnitResults(BuildContext context, String unitName, UnitSimulationResults results, Map<String, dynamic> avgResults, dynamic weapon) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -443,12 +433,7 @@ class _SimulationPageState extends State<SimulationPage> {
     );
   }
 
-  Widget _buildPercentageBar(
-    BuildContext context,
-    String label,
-    int numerator,
-    int denominator,
-  ) {
+  Widget _buildPercentageBar(BuildContext context, String label, int numerator, int denominator) {
     final percentage = (numerator / denominator * 100).toStringAsFixed(1);
     final ratio = numerator / denominator;
 

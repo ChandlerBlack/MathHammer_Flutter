@@ -17,8 +17,6 @@ class NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {
   }
 }
 
-
-
 class ThemeManager extends ChangeNotifier {
 
   final PageTransitionsTheme pageTransitionsTheme = const PageTransitionsTheme(

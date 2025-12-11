@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart'; // go this from https://pub.dev/packages/permission_handler
 
 
 class CameraPage extends StatefulWidget { 

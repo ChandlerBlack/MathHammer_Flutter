@@ -172,7 +172,7 @@ class UnitCardFull extends StatelessWidget {
                 ],
               ),
             ),
-            ElevatedButton(
+            ElevatedButton( // add unit to simulation screen
               onPressed: () => _showSlotSelectionDialog(context), 
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),

@@ -1,7 +1,6 @@
 import 'weapon_stats.dart';
 
 class Unit {
-  // Used in database
   final String id;
   final String name;
   final String? imagePath;

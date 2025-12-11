@@ -37,12 +37,7 @@ class Sim {
   final UnitSimulationResults resultsA = UnitSimulationResults();
   final UnitSimulationResults resultsB = UnitSimulationResults();
 
-  Sim({
-    required this.unitA,
-    required this.unitB,
-    required this.weaponA,
-    required this.weaponB,
-  });
+  Sim({required this.unitA, required this.unitB, required this.weaponA, required this.weaponB});
 
   void runCombatSim(int numSimulations) {
     resultsA.clear();
@@ -97,12 +92,7 @@ class Sim {
     }
   }
 
-  Map<String, dynamic> _performAttack({
-    required Unit attackingUnit,
-    required Unit defendingUnit,
-    required Weapons weapon,
-    required int attackingModels,
-  }) {
+  Map<String, dynamic> _performAttack({required Unit attackingUnit, required Unit defendingUnit, required Weapons weapon, required int attackingModels}) {
     int hits = 0;
     int misses = 0;
     int wounds = 0;
@@ -114,7 +104,7 @@ class Sim {
 
     final twinLinked = weapon.hasKeyword(WeaponKeyword.twinLinked);
 
-    final hitRolls = _rollHits(numAttacks, weapon.ballisticSkill, twinLinked);
+    final hitRolls = _rollHits(numAttacks, weapon.ballisticSkill);
     hits = hitRolls['hits'] as int;
     misses = hitRolls['misses'] as int;
     criticalHits = hitRolls['criticals'] as int;
@@ -122,21 +112,24 @@ class Sim {
     int autoWounds = 0;
     if (weapon.hasKeyword(WeaponKeyword.lethalHits)) {
       autoWounds = criticalHits;
-      hits -= criticalHits; // Remove critical hits from normal hit pool
+      hits -= criticalHits;
     }
-
-    if (weapon.hasKeyword(WeaponKeyword.sustainedHits)) {
-      hits += criticalHits; // Each critical generates an additional hit
+    if (weapon.hasKeyword(WeaponKeyword.sustainedHits1)) {
+      hits += criticalHits; 
+    }
+    if (weapon.hasKeyword(WeaponKeyword.sustainedHits2)) {
+      hits += criticalHits; 
+      hits += criticalHits; 
+    }
+    if (weapon.hasKeyword(WeaponKeyword.sustainedHits3)) {
+      hits += criticalHits;
+      hits += criticalHits;
+      hits += criticalHits; 
     }
 
     // Wound rolls
     if (hits > 0) {
-      final woundRolls = _rollWounds(
-        hits,
-        weapon.strength,
-        defendingUnit.toughness,
-        weapon,
-      );
+      final woundRolls = _rollWounds(hits, weapon.strength, defendingUnit.toughness, weapon, twinLinked);
       wounds = woundRolls['wounds'] as int;
       criticalWounds = woundRolls['criticals'] as int;
     }
@@ -146,25 +139,27 @@ class Sim {
     int devastatingDamage = 0;
     if (weapon.hasKeyword(WeaponKeyword.devastatingWounds)) {
       devastatingDamage = criticalWounds * weapon.damage;
-      wounds -= criticalWounds; // Remove critical wounds from save pool
+      wounds -= criticalWounds;
     }
 
     int unsavedWounds = 0;
     if (wounds > 0) {
-      unsavedWounds = _rollSaves(
-        wounds,
-        defendingUnit.save,
-        weapon.ap,
-        defendingUnit.invulnerableSave,
-      );
+      unsavedWounds = _rollSaves(wounds, defendingUnit.save, weapon.ap, defendingUnit.invulnerableSave);
     }
-
 
     damage = (unsavedWounds * weapon.damage) + devastatingDamage;
 
-
-    if (weapon.hasKeyword(WeaponKeyword.melta) && unsavedWounds > 0) {
-      damage += unsavedWounds; // +1 damage per unsaved wound
+    if (weapon.hasKeyword(WeaponKeyword.melta1) && unsavedWounds > 0) {
+      damage += unsavedWounds;
+    }
+    if (weapon.hasKeyword(WeaponKeyword.melta2) && unsavedWounds > 0) {
+      damage += unsavedWounds; 
+      damage += unsavedWounds;
+    }
+    if (weapon.hasKeyword(WeaponKeyword.melta3) && unsavedWounds > 0) {
+      damage += unsavedWounds;
+      damage += unsavedWounds;
+      damage += unsavedWounds;
     }
 
     return {
@@ -177,7 +172,7 @@ class Sim {
     };
   }
 
-  Map<String, int> _rollHits(int numAttacks, int ballisticSkill, bool twinLinked) {
+  Map<String, int> _rollHits(int numAttacks, int ballisticSkill) {
     if (numAttacks <= 0) return {'hits': 0, 'misses': 0, 'criticals': 0};
 
     final dice = Dice(numAttacks);
@@ -198,7 +193,7 @@ class Sim {
       }
     }
 
-    if (twinLinked && misses.isNotEmpty) {
+    if (misses.isNotEmpty) {
       final rerollDice = Dice(misses.length);
       rerollDice.roll();
 
@@ -221,13 +216,10 @@ class Sim {
     };
   }
 
-  Map<String, int> _rollWounds(
-    int numHits,
-    int strength,
-    int toughness,
-    Weapons weapon,
-  ) {
+  Map<String, int> _rollWounds(int numHits, int strength, int toughness, Weapons weapon, bool twinLinked) {
     if (numHits <= 0) return {'wounds': 0, 'criticals': 0};
+
+    List<int> failedRolls = [];
 
     // Calculate wound roll needed
     int woundRollNeeded;
@@ -256,12 +248,32 @@ class Sim {
       } else if (roll >= woundRollNeeded) {
         wounds++;
       }
+      else {
+        failedRolls.add(roll);
+      }
+    }
+    if (twinLinked) {
+      wounds += _twinLinkedRerolls(failedRolls.length, woundRollNeeded);
     }
 
     return {
       'wounds': wounds,
       'criticals': criticals,
     };
+  }
+
+  int _twinLinkedRerolls(int missedRolls, int neededRoll) {
+    if (missedRolls <= 0) return 0;
+
+    final dice = Dice(missedRolls);
+    dice.roll();
+    int additionalHits = 0;
+    for (var roll in dice.rolls) {
+      if (roll >= neededRoll) {
+        additionalHits++;
+      }
+    }
+    return additionalHits;
   }
 
   int _rollSaves(int numWounds, int save, int armorPen, int invulnSave) {

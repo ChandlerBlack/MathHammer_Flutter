@@ -8,7 +8,6 @@ import 'pages/simulation_page.dart';
 import 'package:mathhammer/database/db.dart';
 import 'package:mathhammer/theme.dart';
 import 'package:mathhammer/settings_manager.dart';
-import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:flutter/services.dart';
 
 
@@ -50,22 +49,6 @@ class MainScaffold extends StatefulWidget {
 }
 
 class _MainScaffoldState extends State<MainScaffold> {
-
-  static final List<ap.AudioPlayer> _lowLatencyPlayers = [];
-  static const int _maxLowLatencyPlayers = 5;
-  static int _currentPlayerIndex = 0;
-
-  static Future<ap.AudioPlayer> _getLowLatencyPlayer() async {
-    if (_lowLatencyPlayers.length < _maxLowLatencyPlayers) {
-      final newPlayer = ap.AudioPlayer();
-      _lowLatencyPlayers.add(newPlayer);
-      return newPlayer;
-    }
-    final player = _lowLatencyPlayers[_currentPlayerIndex];
-    _currentPlayerIndex = (_currentPlayerIndex + 1) % _maxLowLatencyPlayers; 
-    return player;
-  }
-
   int _selectedIndex = 1;
   Unit? _selectedUnit1;
   Unit? _selectedUnit2;
@@ -161,7 +144,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         case 2:
           return FloatingActionButton(
             child: const Icon(Icons.add),
-            onPressed: () {
+            onPressed: () { // thanks for the idea Prof Henderson
               setState(() => _selectedIndex = 0);
               HapticFeedback.heavyImpact();
             },
