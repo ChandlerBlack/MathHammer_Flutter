@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 class CameraPage extends StatefulWidget { 
@@ -23,17 +24,64 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Future<void> _initializeCamera() async {
-    _cameras = await availableCameras();
-    if (_cameras != null && _cameras!.isNotEmpty) {
-      _controller = CameraController(
-        _cameras!.first,
-        ResolutionPreset.medium,
-      );
-      await _controller!.initialize();
-      setState(() {
-        _isInitialized = true;
-      });
+    try {
+      final status = await Permission.camera.request();
+      if (status.isPermanentlyDenied) {
+        _showPermissionOptions();
+        return;
+      }
+      if (status.isDenied) {
+        final result = await Permission.camera.request();
+        if (!result.isGranted) {
+          _showPermissionOptions();
+          return;
+        }
+      }
+      _cameras = await availableCameras();
+      if (_cameras != null && _cameras!.isNotEmpty) {
+          _controller = CameraController(
+          _cameras!.first,
+          ResolutionPreset.medium,
+          );
+        await _controller!.initialize();
+        setState(() {
+          _isInitialized = true;
+        });
+      }
+    } catch (e) {
+      _showPermissionOptions();
     }
+  }
+
+
+  // If user denies permission, all them to change that from settings or go back to the form 
+  void _showPermissionOptions() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Camera Permission Denied'),
+        content: const Text('Please allow camera access to take pictures.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+              openAppSettings();
+
+            },
+            child: const Text('Open Settings'),
+          ),
+          TextButton(
+            onPressed: () {
+              // Close dialog and go back to form page
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -44,7 +92,7 @@ class _CameraPageState extends State<CameraPage> {
 
   Future<void> _takePicture() async {
     if (_controller == null && _controller!.value.isInitialized) {
-      return;
+      Navigator.of(context).pop();
     }
 
     try {

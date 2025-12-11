@@ -8,6 +8,8 @@ import '../models/unit_stats.dart';
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import '../settings_manager.dart';
 
 
 
@@ -28,6 +30,7 @@ class _NewUnitForumState extends State<NewUnitForum> {
   final _leadershipController = TextEditingController();
   final _objectiveController = TextEditingController();
   final _modelController = TextEditingController();
+  final _invulnController = TextEditingController(text: '7');
 
   var random = Random();
 
@@ -44,6 +47,7 @@ class _NewUnitForumState extends State<NewUnitForum> {
     _leadershipController.dispose();
     _objectiveController.dispose();
     _modelController.dispose();
+    _invulnController.dispose();
     super.dispose();
   }
 
@@ -127,6 +131,7 @@ class _NewUnitForumState extends State<NewUnitForum> {
                 _fieldBuilder('Leadership',  _leadershipController),
                 _fieldBuilder('Objective',  _objectiveController),
                 _fieldBuilder('Models',  _modelController),
+                _fieldBuilder('Invuln Save', _invulnController),
               ],
             ),
             const SizedBox(height: 16.0),
@@ -166,7 +171,10 @@ class _NewUnitForumState extends State<NewUnitForum> {
                       setState(() {
                         _imagefile = null;
                       });
-                      _getLowLatencyPlayer().then((player) => player.play(ap.AssetSource('sounds/Objective achieved.mp3')));
+                      final settingsManager = Provider.of<SettingsManager>(context, listen: false);
+                      if (settingsManager.soundEnabled) {
+                        _getLowLatencyPlayer().then((player) => player.play(ap.AssetSource('sounds/Objective achieved.mp3')));
+                      }
                     }
                   } catch (e) {
                     // show error message
@@ -181,7 +189,10 @@ class _NewUnitForumState extends State<NewUnitForum> {
                 }
                 else {
                   // show error message
-                  _getLowLatencyPlayer().then((player) => player.play(ap.AssetSource('sounds/Awaiting orders.mp3')));
+                  final settingsManager = Provider.of<SettingsManager>(context, listen: false);
+                  if (settingsManager.soundEnabled) {
+                    _getLowLatencyPlayer().then((player) => player.play(ap.AssetSource('sounds/Awaiting orders.mp3')));
+                  }
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Please fill out all required fields'),
                       backgroundColor: Colors.red,

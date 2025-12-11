@@ -163,6 +163,7 @@ class UnitCardFull extends StatelessWidget {
                   Text('Movement: ${unit.movement}"', style: Theme.of(context).textTheme.titleMedium),
                   Text('Toughness: ${unit.toughness}', style: Theme.of(context).textTheme.titleMedium),
                   Text('Save: ${unit.save}+', style: Theme.of(context).textTheme.titleMedium),
+                  Text('Invulnerable Save: ${unit.invulnerableSave}+', style: Theme.of(context).textTheme.titleMedium),
                   Text('Wounds: ${unit.wounds}', style: Theme.of(context).textTheme.titleMedium),
                   Text('Leadership: ${unit.leadership}', style: Theme.of(context).textTheme.titleMedium),
                   Text('Objective Control: ${unit.objectiveControl}', style: Theme.of(context).textTheme.titleMedium),

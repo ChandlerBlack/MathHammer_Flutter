@@ -43,6 +43,26 @@ class _SettingsPageState extends State<SettingsPage> {
           
           const SizedBox(height: 24),
           
+          // Audio Settings
+          const Text(
+            'Audio',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: SwitchListTile(
+              title: const Text('Sound Effects'),
+              subtitle: Text(settingsManager.soundEnabled ? 'Enabled' : 'Disabled'),
+              value: settingsManager.soundEnabled,
+              onChanged: (value) => settingsManager.setSoundEnabled(value),
+              secondary: Icon(
+                settingsManager.soundEnabled ? Icons.volume_up : Icons.volume_off,
+              ),
+            ),
+          ),
+          
+          const SizedBox(height: 24),
+          
           // Library Sorting
           const Text(
             'Library Settings',

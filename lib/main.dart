@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:mathhammer/pages/settings_page.dart';
 import 'package:mathhammer/models/unit_stats.dart';
@@ -11,13 +10,6 @@ import 'package:mathhammer/theme.dart';
 import 'package:mathhammer/settings_manager.dart';
 import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:flutter/services.dart';
-
-
-/*
-  ToDo: 
-  - Improve UI/UX (animations)
-  - implement sim 
- */
 
 
 void main() async {
@@ -34,7 +26,6 @@ void main() async {
   );
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -43,8 +34,8 @@ class MyApp extends StatelessWidget {
     final themeManager = Provider.of<ThemeManager>(context);
     return MaterialApp(
       title: 'MathHammer',
-      theme: ThemeManager.lightTheme,
-      darkTheme: ThemeManager.darkTheme,
+      theme: themeManager.lightTheme,
+      darkTheme: themeManager.darkTheme,
       themeMode: themeManager.themeMode,
       home: const MainScaffold(),
     );
@@ -60,7 +51,7 @@ class MainScaffold extends StatefulWidget {
 
 class _MainScaffoldState extends State<MainScaffold> {
 
-  static final List<ap.AudioPlayer> _lowLatencyPlayers = []; // all this is to allow multiple sounds to play at once
+  static final List<ap.AudioPlayer> _lowLatencyPlayers = [];
   static const int _maxLowLatencyPlayers = 5;
   static int _currentPlayerIndex = 0;
 
@@ -70,12 +61,10 @@ class _MainScaffoldState extends State<MainScaffold> {
       _lowLatencyPlayers.add(newPlayer);
       return newPlayer;
     }
-    // If all players are busy, return the next one in the list
     final player = _lowLatencyPlayers[_currentPlayerIndex];
     _currentPlayerIndex = (_currentPlayerIndex + 1) % _maxLowLatencyPlayers; 
     return player;
   }
-
 
   int _selectedIndex = 1;
   Unit? _selectedUnit1;
@@ -107,7 +96,6 @@ class _MainScaffoldState extends State<MainScaffold> {
     });
   }
 
-  // list of pages for bottom navigation
   List<Widget> get _pages => [
     AddUnitPage(),
     SimulationPage(
@@ -137,7 +125,6 @@ class _MainScaffoldState extends State<MainScaffold> {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SettingsPage()),
-
               );
             }
           ),
@@ -147,7 +134,7 @@ class _MainScaffoldState extends State<MainScaffold> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
-          setState(() => _selectedIndex = index); // also thanks Prof Henderson
+          setState(() => _selectedIndex = index);
           HapticFeedback.heavyImpact();
         },   
         items: const [
@@ -167,28 +154,12 @@ class _MainScaffoldState extends State<MainScaffold> {
       ),
       floatingActionButton: _fabBuilder(),
     );
-    
   }
 
-  // helper to handle the different FABs for each page 
   Widget? _fabBuilder() {
-    switch (_selectedIndex) {
-        case 1:
-          return FloatingActionButton(
-            child: const Icon(Icons.play_arrow),
-            onPressed: () {
-              if (_selectedUnit1 != null && _selectedUnit2 != null) {
-                SnackBar(content: Text('Starting Simulation...'), backgroundColor: Colors.green, duration: Durations.short1,);
-                // add call to sim 
-              } else {
-                SnackBar(content: Text('Please select two units for simulation.'), backgroundColor: Colors.red,);
-              }
-              HapticFeedback.heavyImpact();
-              _getLowLatencyPlayer().then((player) => player.play(ap.AssetSource('sounds/For the emperor.mp3')));
-            },
-          );
+    switch (_selectedIndex) { // kept switch in case i want to add more fabs later
         case 2:
-          return FloatingActionButton( // Thanks for the idea Prof Henderson
+          return FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () {
               setState(() => _selectedIndex = 0);
@@ -199,8 +170,4 @@ class _MainScaffoldState extends State<MainScaffold> {
           return null;
     }
   }
-
-
-
-
 }

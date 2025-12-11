@@ -13,6 +13,7 @@ class Unit {
   final int leadership;
   final int objectiveControl;
   final int modelCount;
+  final int invulnerableSave;
 
   final List<Weapons> rangedWeapons;
   final List<Weapons> meleeWeapons;
@@ -28,6 +29,7 @@ class Unit {
     required this.leadership,
     required this.objectiveControl,
     required this.modelCount,
+    this.invulnerableSave = 7,
     required this.rangedWeapons,
     required this.meleeWeapons,
   }); 
@@ -46,6 +48,7 @@ class Unit {
         'leadership': leadership,
         'objectiveControl': objectiveControl,
         'modelCount': modelCount,
+        'invulnerableSave': invulnerableSave,
         'rangedWeapons':
             rangedWeapons.map((weapon) => weapon.toJson()).toList(),
         'meleeWeapons': meleeWeapons.map((weapon) => weapon.toJson()).toList(),
@@ -63,6 +66,7 @@ class Unit {
       leadership: json['leadership'],
       objectiveControl: json['objectiveControl'],
       modelCount: json['modelCount'],
+      invulnerableSave: json['invulnerableSave'] ?? 7,
       rangedWeapons: (json['rangedWeapons'] as List)
           .map((weaponJson) => Weapons.fromJson(weaponJson))
           .toList(),
@@ -88,6 +92,7 @@ class Unit {
       'leadership': leadership,
       'objectiveControl': objectiveControl,
       'modelCount': modelCount,
+      'invulnerableSave': invulnerableSave,
     };
   }
 
@@ -109,6 +114,7 @@ class Unit {
       modelCount: map['modelCount'],
       rangedWeapons: rangedWeapons,
       meleeWeapons: meleeWeapons,
+      invulnerableSave: map['invulnerableSave'] ?? 7,
     );
   }
 

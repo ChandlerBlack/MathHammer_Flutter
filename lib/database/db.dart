@@ -30,7 +30,8 @@ Future<void> initDatabase() async {
           wounds INTEGER NOT NULL,
           leadership INTEGER NOT NULL,
           objectiveControl INTEGER NOT NULL,
-          modelCount INTEGER NOT NULL
+          modelCount INTEGER NOT NULL,
+          invulnerableSave INTEGER DEFAULT 7
         )
       ''');
       // create weapons table

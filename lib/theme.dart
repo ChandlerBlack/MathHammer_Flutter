@@ -2,7 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+class NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {
+  const NoAnimationPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return child;
+  }
+}
+
+
+
 class ThemeManager extends ChangeNotifier {
+
+  final PageTransitionsTheme pageTransitionsTheme = const PageTransitionsTheme(
+    builders: {
+      TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+      TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      TargetPlatform.linux: NoAnimationPageTransitionsBuilder(),
+      TargetPlatform.macOS: NoAnimationPageTransitionsBuilder(),
+      TargetPlatform.windows: NoAnimationPageTransitionsBuilder(),
+    }
+  );
+
   static const String _themeKey = 'theme_mode';
   ThemeMode _themeMode = ThemeMode.dark;
 
@@ -42,7 +70,7 @@ class ThemeManager extends ChangeNotifier {
   }
 
   // Light theme definition
-  static ThemeData get lightTheme {
+  ThemeData get lightTheme {
     return ThemeData(
       brightness: Brightness.light,
       colorScheme: ColorScheme.light(
@@ -109,11 +137,18 @@ class ThemeManager extends ChangeNotifier {
           foregroundColor: const Color.fromARGB(255, 0, 0, 0),
         ),
       ),
+      sliderTheme: SliderThemeData(
+        thumbColor: const Color(0xFF0081A7),
+        activeTrackColor: const Color(0xFF005F73),
+        inactiveTrackColor: const Color(0xFFB0B0B0),
+      ),
+      pageTransitionsTheme: pageTransitionsTheme,
+
     );
   }
 
   // Dark theme definition
-  static ThemeData get darkTheme {
+  ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
       colorScheme: ColorScheme.dark(
@@ -168,6 +203,12 @@ class ThemeManager extends ChangeNotifier {
           color: Colors.white,
         ),
       ),
+      sliderTheme: SliderThemeData(
+        thumbColor: const Color(0xFF598392),
+        activeTrackColor: const Color(0xFF81CFEF),
+        inactiveTrackColor: const Color(0xFF444444),
+      ),
+      pageTransitionsTheme: pageTransitionsTheme,
     );
   }
 }
