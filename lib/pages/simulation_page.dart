@@ -4,7 +4,7 @@ import '../models/unit_stats.dart';
 import 'package:mathhammer/simulation/sim.dart';
 import '../simulation/weapon_profiles.dart';
 import 'package:audioplayers/audioplayers.dart' as ap;
-import 'package:mathhammer/settings_manager.dart';
+import 'package:mathhammer/theme/settings_manager.dart';
 import 'package:provider/provider.dart';
 
 

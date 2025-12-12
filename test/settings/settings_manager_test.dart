@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mathhammer/settings_manager.dart';
+import 'package:mathhammer/theme/settings_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

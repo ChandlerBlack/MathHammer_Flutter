@@ -9,7 +9,7 @@ import 'dart:math';
 import 'package:audioplayers/audioplayers.dart' as ap;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../settings_manager.dart';
+import '../theme/settings_manager.dart';
 
 
 

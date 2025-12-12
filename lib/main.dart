@@ -6,8 +6,8 @@ import 'pages/add_unit_page.dart';
 import 'pages/unit_library_page.dart';
 import 'pages/simulation_page.dart';
 import 'package:mathhammer/database/db.dart';
-import 'package:mathhammer/theme.dart';
-import 'package:mathhammer/settings_manager.dart';
+import 'package:mathhammer/theme/theme.dart';
+import 'package:mathhammer/theme/settings_manager.dart';
 import 'package:flutter/services.dart';
 
 

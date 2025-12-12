@@ -3,7 +3,7 @@ import 'package:mathhammer/widgets/unit_card_base.dart';
 import '../models/unit_stats.dart';
 import '../database/db.dart';
 import 'package:provider/provider.dart';
-import '../settings_manager.dart';
+import '../theme/settings_manager.dart';
 
 class UnitLibraryPage extends StatefulWidget{
   final Function(Unit, int)? onSelectUnit;
