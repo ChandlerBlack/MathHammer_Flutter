@@ -7,9 +7,7 @@ enum SortOrder {
   reverseAlphabetical
 }
 
-
-
-// This class was needed to maintain persistent settings
+// This class was needed to maintain persistent settings pulled the idea from the lab 10 code
 class SettingsManager extends ChangeNotifier {
   static const String _sortOrderKey = 'sort_order';
   static const String _soundEnabledKey = 'sound_enabled';

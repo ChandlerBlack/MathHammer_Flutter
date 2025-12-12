@@ -1,5 +1,3 @@
-import 'weapon_stats.dart';
-
 class Unit {
   final String id;
   final String name;

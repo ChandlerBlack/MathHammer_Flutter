@@ -72,7 +72,6 @@ Future<List<Unit>> getUnitsAlphabetical() async {
   List<Unit> units = [];
 
   for (var unitMap in unitMaps) {
-    final String unitId = unitMap['id'];
     units.add(Unit.fromMap(unitMap));
   }
   return units;
@@ -88,7 +87,6 @@ Future<List<Unit>> getUnitsReverseAlphabetical() async {
   List<Unit> units = [];
 
   for (var unitMap in unitMaps) {
-    final String unitId = unitMap['id'];
     units.add(Unit.fromMap(unitMap));
   }
   return units;
