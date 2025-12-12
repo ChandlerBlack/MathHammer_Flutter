@@ -14,9 +14,6 @@ class Unit {
   final int modelCount;
   final int invulnerableSave;
 
-  final List<Weapons> rangedWeapons;
-  final List<Weapons> meleeWeapons;
-
   Unit({
     required this.id,
     required this.name,
@@ -29,8 +26,6 @@ class Unit {
     required this.objectiveControl,
     required this.modelCount,
     this.invulnerableSave = 7,
-    required this.rangedWeapons,
-    required this.meleeWeapons,
   }); 
 
 
@@ -48,9 +43,6 @@ class Unit {
         'objectiveControl': objectiveControl,
         'modelCount': modelCount,
         'invulnerableSave': invulnerableSave,
-        'rangedWeapons':
-            rangedWeapons.map((weapon) => weapon.toJson()).toList(),
-        'meleeWeapons': meleeWeapons.map((weapon) => weapon.toJson()).toList(),
   };
 
   factory Unit.fromJson(Map<String, dynamic> json) {
@@ -66,12 +58,6 @@ class Unit {
       objectiveControl: json['objectiveControl'],
       modelCount: json['modelCount'],
       invulnerableSave: json['invulnerableSave'] ?? 7,
-      rangedWeapons: (json['rangedWeapons'] as List)
-          .map((weaponJson) => Weapons.fromJson(weaponJson))
-          .toList(),
-      meleeWeapons: (json['meleeWeapons'] as List)
-          .map((weaponJson) => Weapons.fromJson(weaponJson))
-          .toList(),
     );
   } 
 
@@ -97,8 +83,6 @@ class Unit {
 
   factory Unit.fromMap(
     Map<String, dynamic> map,
-    List<Weapons> rangedWeapons,
-    List<Weapons> meleeWeapons,
   ) {
     return Unit(
       id: map['id'],
@@ -111,8 +95,6 @@ class Unit {
       leadership: map['leadership'],
       objectiveControl: map['objectiveControl'],
       modelCount: map['modelCount'],
-      rangedWeapons: rangedWeapons,
-      meleeWeapons: meleeWeapons,
       invulnerableSave: map['invulnerableSave'] ?? 7,
     );
   }

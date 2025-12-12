@@ -27,8 +27,6 @@ void main() {
         objectiveControl: 2,
         modelCount: 10,
         invulnerableSave: 4,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       // Create test database
@@ -177,7 +175,7 @@ void main() {
       expect(find.textContaining('has been deleted'), findsOneWidget);
       
       // Verify unit was deleted
-      final units = await getAllUnits();
+      final units = await getUnitsAlphabetical();
       expect(units, isEmpty);
     });
 
@@ -219,8 +217,6 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 5,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       await tester.pumpWidget(

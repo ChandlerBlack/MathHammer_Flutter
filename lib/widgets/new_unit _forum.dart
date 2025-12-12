@@ -150,8 +150,6 @@ class _NewUnitForumState extends State<NewUnitForum> {
                       leadership: int.parse(_leadershipController.text),
                       objectiveControl: int.parse(_objectiveController.text),
                       modelCount: int.parse(_modelController.text),
-                      rangedWeapons: [],
-                      meleeWeapons: [],
                       imagePath: _imagefile?.path,
                     );
                     

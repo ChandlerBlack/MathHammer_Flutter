@@ -43,8 +43,6 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 10,
-        rangedWeapons: [testWeapon1],
-        meleeWeapons: [],
       );
 
       testUnit2 = Unit(
@@ -57,8 +55,6 @@ void main() {
         leadership: 7,
         objectiveControl: 2,
         modelCount: 20,
-        rangedWeapons: [],
-        meleeWeapons: [testWeapon2],
       );
     });
 
@@ -178,8 +174,6 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 5,
-        rangedWeapons: [highAttackWeapon],
-        meleeWeapons: [],
       );
 
       final sim = Sim(
@@ -361,8 +355,6 @@ void main() {
         leadership: 7,
         objectiveControl: 1,
         modelCount: 10,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       final sim = Sim(
@@ -399,8 +391,6 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 5,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       final sim = Sim(
@@ -519,8 +509,6 @@ void main() {
         leadership: 7,
         objectiveControl: 1,
         modelCount: 5,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       final sim = Sim(

@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mathhammer/models/unit_stats.dart';
-import 'package:mathhammer/models/weapon_stats.dart';
 
 void main() {
   group('Unit Model Tests', () {
@@ -18,8 +17,6 @@ void main() {
         objectiveControl: 2,
         modelCount: 10,
         invulnerableSave: 7,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
     });
 
@@ -51,8 +48,6 @@ void main() {
         objectiveControl: 2,
         modelCount: 5,
         invulnerableSave: 4,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
       expect(unitWithInvuln.invulnerableSave, 4);
     });
@@ -86,29 +81,15 @@ void main() {
         'invulnerableSave': 7,
       };
       
-      final unit = Unit.fromMap(map, [], []);
+      final unit = Unit.fromMap(map);
       expect(unit.id, '3');
       expect(unit.name, 'Tactical Squad');
       expect(unit.imagePath, '/path/to/image.png');
       expect(unit.movement, 6);
-      expect(unit.rangedWeapons, isEmpty);
-      expect(unit.meleeWeapons, isEmpty);
     });
 
     test('Unit toJson and fromJson', () {
-      final weapon = Weapons(
-        id: '1',
-        name: 'Bolter',
-        attacks: 2,
-        ballisticSkill: 3,
-        strength: 4,
-        ap: 0,
-        range: 24,
-        damage: 1,
-        type: WeaponType.ranged,
-      );
-
-      final unitWithWeapons = Unit(
+      final unitForJson = Unit(
         id: '4',
         name: 'Intercessor',
         movement: 6,
@@ -118,21 +99,15 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 5,
-        rangedWeapons: [weapon],
-        meleeWeapons: [],
       );
 
-      final json = unitWithWeapons.toJson();
+      final json = unitForJson.toJson();
       expect(json['id'], '4');
       expect(json['name'], 'Intercessor');
-      expect(json['rangedWeapons'], hasLength(1));
-      expect(json['meleeWeapons'], isEmpty);
 
       final reconstructedUnit = Unit.fromJson(json);
-      expect(reconstructedUnit.id, unitWithWeapons.id);
-      expect(reconstructedUnit.name, unitWithWeapons.name);
-      expect(reconstructedUnit.rangedWeapons.length, 1);
-      expect(reconstructedUnit.rangedWeapons.first.name, 'Bolter');
+      expect(reconstructedUnit.id, unitForJson.id);
+      expect(reconstructedUnit.name, unitForJson.name);
     });
 
     test('Unit with null imagePath', () {
@@ -151,8 +126,6 @@ void main() {
         leadership: 6,
         objectiveControl: 1,
         modelCount: 1,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
       expect(unitWithImage.imagePath, '/images/captain.png');
     });

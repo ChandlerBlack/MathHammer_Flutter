@@ -19,8 +19,6 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 10,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
     });
 
@@ -128,8 +126,6 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 10,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       await tester.pumpWidget(
@@ -231,8 +227,6 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 10,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       await tester.pumpWidget(
@@ -261,8 +255,6 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 10,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       await tester.pumpWidget(

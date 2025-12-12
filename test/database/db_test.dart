@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:mathhammer/database/db.dart';
 import 'package:mathhammer/models/unit_stats.dart';
-import 'package:mathhammer/models/weapon_stats.dart';
 
 void main() {
   // Initialize FFI for desktop testing
@@ -36,22 +35,6 @@ void main() {
                 invulnerableSave INTEGER DEFAULT 7
               )
             ''');
-            await db.execute('''
-              CREATE TABLE weapons (
-                id TEXT PRIMARY KEY,
-                unitId TEXT NOT NULL,
-                name TEXT NOT NULL,
-                attacks INTEGER NOT NULL,
-                strength INTEGER NOT NULL,
-                ap INTEGER NOT NULL,
-                range INTEGER NOT NULL,
-                damage INTEGER NOT NULL,
-                ballisticSkill INTEGER DEFAULT 3,
-                type TEXT DEFAULT 'ranged',
-                keywords TEXT DEFAULT '',
-                FOREIGN KEY (unitId) REFERENCES units (id) ON DELETE CASCADE
-              )
-            ''');
           },
         ),
       );
@@ -73,80 +56,16 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 10,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       await insertUnit(unit);
-      final units = await getAllUnits();
+      final units = await getUnitsAlphabetical();
 
       expect(units, hasLength(1));
       expect(units.first.name, 'Space Marine');
       expect(units.first.id, '1');
       expect(units.first.movement, 6);
       expect(units.first.toughness, 4);
-    });
-
-    test('Insert unit with weapons', () async {
-      final weapon = Weapons(
-        id: 'w1',
-        name: 'Bolter',
-        attacks: 2,
-        strength: 4,
-        ap: 0,
-        range: 24,
-        damage: 1,
-      );
-
-      final unit = Unit(
-        id: '2',
-        name: 'Tactical Marine',
-        movement: 6,
-        toughness: 4,
-        save: 3,
-        wounds: 2,
-        leadership: 6,
-        objectiveControl: 2,
-        modelCount: 5,
-        rangedWeapons: [weapon],
-        meleeWeapons: [],
-      );
-
-      await insertUnit(unit);
-      final units = await getAllUnits();
-
-      expect(units, hasLength(1));
-      expect(units.first.rangedWeapons, hasLength(1));
-      expect(units.first.rangedWeapons.first.name, 'Bolter');
-      expect(units.first.rangedWeapons.first.attacks, 2);
-    });
-
-    test('Get unit by name', () async {
-      final unit = Unit(
-        id: '3',
-        name: 'Terminator',
-        movement: 5,
-        toughness: 5,
-        save: 2,
-        wounds: 3,
-        leadership: 6,
-        objectiveControl: 2,
-        modelCount: 5,
-        rangedWeapons: [],
-        meleeWeapons: [],
-      );
-
-      await insertUnit(unit);
-      final retrieved = await getUnitByName('Terminator');
-
-      expect(retrieved, isNotNull);
-      expect(retrieved!.name, 'Terminator');
-      expect(retrieved.toughness, 5);
-    });
-
-    test('Get unit by name returns null if not found', () async {
-      final retrieved = await getUnitByName('NonExistent');
-      expect(retrieved, isNull);
     });
 
     test('Update unit', () async {
@@ -160,8 +79,6 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 10,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       await insertUnit(unit);
@@ -176,15 +93,13 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 10,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       await updateUnit(updatedUnit);
-      final retrieved = await getUnitByName('Veteran Scout');
+      final units = await getUnitsAlphabetical();
+      final retrieved = units.firstWhere((u) => u.id == '4');
 
-      expect(retrieved, isNotNull);
-      expect(retrieved!.name, 'Veteran Scout');
+      expect(retrieved.name, 'Veteran Scout');
       expect(retrieved.movement, 7);
       expect(retrieved.save, 3);
       expect(retrieved.wounds, 2);
@@ -201,55 +116,15 @@ void main() {
         leadership: 6,
         objectiveControl: 2,
         modelCount: 10,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       await insertUnit(unit);
-      var units = await getAllUnits();
+      var units = await getUnitsAlphabetical();
       expect(units, hasLength(1));
 
       await deleteUnit('5');
-      units = await getAllUnits();
+      units = await getUnitsAlphabetical();
       expect(units, isEmpty);
-    });
-
-    test('Delete unit also deletes weapons', () async {
-      final weapon = Weapons(
-        id: 'w2',
-        name: 'Power Sword',
-        attacks: 3,
-        strength: 5,
-        ap: -3,
-        range: 0,
-        damage: 2,
-      );
-
-      final unit = Unit(
-        id: '6',
-        name: 'Captain',
-        movement: 6,
-        toughness: 4,
-        save: 3,
-        wounds: 5,
-        leadership: 6,
-        objectiveControl: 1,
-        modelCount: 1,
-        rangedWeapons: [],
-        meleeWeapons: [weapon],
-      );
-
-      await insertUnit(unit);
-      
-      // Verify weapon was inserted
-      final weaponsBefore = await testDb.query('weapons');
-      expect(weaponsBefore, hasLength(1));
-
-      await deleteUnit('6');
-      
-      // Verify weapon was deleted
-      final weaponsAfter = await testDb.query('weapons');
-      expect(weaponsAfter, isEmpty);
     });
 
     test('Get units alphabetically', () async {
@@ -264,8 +139,6 @@ void main() {
           leadership: 6,
           objectiveControl: 2,
           modelCount: 10,
-          rangedWeapons: [],
-          meleeWeapons: [],
         ),
         Unit(
           id: '8',
@@ -277,8 +150,6 @@ void main() {
           leadership: 6,
           objectiveControl: 2,
           modelCount: 10,
-          rangedWeapons: [],
-          meleeWeapons: [],
         ),
         Unit(
           id: '9',
@@ -290,8 +161,6 @@ void main() {
           leadership: 6,
           objectiveControl: 2,
           modelCount: 10,
-          rangedWeapons: [],
-          meleeWeapons: [],
         ),
       ];
 
@@ -318,8 +187,6 @@ void main() {
           leadership: 6,
           objectiveControl: 2,
           modelCount: 10,
-          rangedWeapons: [],
-          meleeWeapons: [],
         ),
         Unit(
           id: '11',
@@ -331,8 +198,6 @@ void main() {
           leadership: 6,
           objectiveControl: 2,
           modelCount: 10,
-          rangedWeapons: [],
-          meleeWeapons: [],
         ),
       ];
 
@@ -359,8 +224,6 @@ void main() {
           leadership: 6,
           objectiveControl: 2,
           modelCount: 10,
-          rangedWeapons: [],
-          meleeWeapons: [],
         ),
       );
 
@@ -368,7 +231,7 @@ void main() {
         await insertUnit(unit);
       }
 
-      final retrieved = await getAllUnits();
+      final retrieved = await getUnitsAlphabetical();
       expect(retrieved, hasLength(5));
     });
 
@@ -384,15 +247,13 @@ void main() {
         objectiveControl: 2,
         modelCount: 5,
         invulnerableSave: 4,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       await insertUnit(unit);
-      final retrieved = await getUnitByName('Storm Shield Terminator');
+      final units = await getUnitsAlphabetical();
+      final retrieved = units.firstWhere((u) => u.id == '12');
 
-      expect(retrieved, isNotNull);
-      expect(retrieved!.invulnerableSave, 4);
+      expect(retrieved.invulnerableSave, 4);
     });
 
     test('Unit with image path', () async {
@@ -407,79 +268,17 @@ void main() {
         leadership: 6,
         objectiveControl: 1,
         modelCount: 1,
-        rangedWeapons: [],
-        meleeWeapons: [],
       );
 
       await insertUnit(unit);
-      final retrieved = await getUnitByName('Captain with Image');
+      final units = await getUnitsAlphabetical();
+      final retrieved = units.firstWhere((u) => u.id == '13');
 
-      expect(retrieved, isNotNull);
-      expect(retrieved!.imagePath, '/path/to/image.png');
-    });
-
-    test('Update unit weapons', () async {
-      final weapon1 = Weapons(
-        id: 'w3',
-        name: 'Bolter',
-        attacks: 2,
-        strength: 4,
-        ap: 0,
-        range: 24,
-        damage: 1,
-      );
-
-      final unit = Unit(
-        id: '14',
-        name: 'Upgradeable Marine',
-        movement: 6,
-        toughness: 4,
-        save: 3,
-        wounds: 2,
-        leadership: 6,
-        objectiveControl: 2,
-        modelCount: 5,
-        rangedWeapons: [weapon1],
-        meleeWeapons: [],
-      );
-
-      await insertUnit(unit);
-
-      final weapon2 = Weapons(
-        id: 'w4',
-        name: 'Plasma Gun',
-        attacks: 1,
-        strength: 7,
-        ap: -3,
-        range: 24,
-        damage: 2,
-      );
-
-      final updatedUnit = Unit(
-        id: '14',
-        name: 'Upgradeable Marine',
-        movement: 6,
-        toughness: 4,
-        save: 3,
-        wounds: 2,
-        leadership: 6,
-        objectiveControl: 2,
-        modelCount: 5,
-        rangedWeapons: [weapon2],
-        meleeWeapons: [],
-      );
-
-      await updateUnit(updatedUnit);
-      final retrieved = await getUnitByName('Upgradeable Marine');
-
-      expect(retrieved, isNotNull);
-      expect(retrieved!.rangedWeapons, hasLength(1));
-      expect(retrieved.rangedWeapons.first.name, 'Plasma Gun');
-      expect(retrieved.rangedWeapons.first.strength, 7);
+      expect(retrieved.imagePath, '/path/to/image.png');
     });
 
     test('Empty database returns empty list', () async {
-      final units = await getAllUnits();
+      final units = await getUnitsAlphabetical();
       expect(units, isEmpty);
     });
 
